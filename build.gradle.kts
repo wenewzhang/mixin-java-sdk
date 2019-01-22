@@ -30,13 +30,11 @@ dependencies {
     testImplementation("junit:junit:4.12")
 }
 
-tasks.getByName<Upload>("uploadArchives") {
+
+tasks.named<Upload>("uploadArchives") {
     repositories.withGroovyBuilder {
-    "mavenDeployer" {
-        setProperty("configuration", deployerJars)
-        "repository"("url" to "scp://server/home/mixin") {
-            "authentication"("userName" to "mixin", "password" to "password")
+        "mavenDeployer" {
+            "repository"("url" to "file://localhost/tmp/mixin/")
         }
-    }
     }
 }
