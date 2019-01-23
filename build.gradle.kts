@@ -28,6 +28,8 @@ dependencies {
     implementation("com.auth0:java-jwt:3.5.0")
     implementation("commons-codec:commons-codec:1.11")
     implementation("com.squareup.okio:okio:2.2.1")
+    implementation("com.squareup.okhttp3:okhttp:3.12.1")
+    implementation("com.google.code.gson:gson:2.8.5")
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")
 }
