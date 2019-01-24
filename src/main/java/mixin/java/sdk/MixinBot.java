@@ -25,7 +25,7 @@ public class MixinBot {
     return client.newWebSocket(request, callback);
   }
 
-  private static boolean send(WebSocket webSocket, Action action, String params) {
+  private static boolean send(WebSocket webSocket, MIXIN_Action action, String params) {
     String rawJson =
       "{" +
         "  'id': '" + UUID.randomUUID().toString() + "'," +
@@ -37,14 +37,14 @@ public class MixinBot {
   }
 
   public static boolean sendListPendingMessages(WebSocket webSocket) {
-    return send(webSocket, Action.LIST_PENDING_MESSAGES, null);
+    return send(webSocket, MIXIN_Action.LIST_PENDING_MESSAGES, null);
   }
 
   public static boolean sendMessageAck(WebSocket webSocket, String messageId) {
     String params =
       String.format(("{'message_id':'%s', 'status':'READ'}").replaceAll("'", "\"")
         , messageId);
-    return send(webSocket, Action.ACKNOWLEDGE_MESSAGE_RECEIPT, params);
+    return send(webSocket, MIXIN_Action.ACKNOWLEDGE_MESSAGE_RECEIPT, params);
   }
 
   public static boolean sendText(
@@ -60,10 +60,10 @@ public class MixinBot {
         conversationId,
         recipientId,
         UUID.randomUUID().toString(),
-        Category.PLAIN_TEXT,
+        MIXIN_Category.PLAIN_TEXT,
         toBase64(data)
       );
-    return send(webSocket, Action.CREATE_MESSAGE, params);
+    return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params);
   }
 
   public static boolean sendSticker(
@@ -79,10 +79,10 @@ public class MixinBot {
         conversationId,
         recipientId,
         UUID.randomUUID().toString(),
-        Category.PLAIN_STICKER,
+        MIXIN_Category.PLAIN_STICKER,
         toBase64(data)
       );
-    return send(webSocket, Action.CREATE_MESSAGE, params);
+    return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params);
   }
 
   public static boolean sendContact(
@@ -97,10 +97,10 @@ public class MixinBot {
         conversationId,
         recipientId,
         UUID.randomUUID().toString(),
-        Category.PLAIN_CONTACT,
+        MIXIN_Category.PLAIN_CONTACT,
         toBase64(String.format("{'user_id': '%s'}".replaceAll("'", "\""), contactId))
       );
-    return send(webSocket, Action.CREATE_MESSAGE, params);
+    return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params);
   }
 
   private static HashMap<String, String> makeHeaders(String token) {
