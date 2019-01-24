@@ -14,6 +14,8 @@ public enum MIXIN_Category {
   BAD_OR_NOT_IMPLEMENTED_BY_THIS_SDK_YET;
 
   public static MIXIN_Category parseFrom(JsonObject obj) {
+    if ( obj.get("data") == null ) return null;
+    if (obj.get("data").getAsJsonObject().get("category") == null ) return null;
     return parseFrom(obj.get("data").getAsJsonObject().get("category").getAsString());
   }
 
