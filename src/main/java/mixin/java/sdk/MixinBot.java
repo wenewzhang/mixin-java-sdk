@@ -58,10 +58,13 @@ public class MixinBot {
   }
 
   public static boolean sendMessageAck(WebSocket webSocket, String messageId) {
-    String params =
-      String.format(("{'message_id':'%s', 'status':'READ'}").replaceAll("'", "\"")
-        , messageId);
-    return send(webSocket, MIXIN_Action.ACKNOWLEDGE_MESSAGE_RECEIPT, params);
+    // String params =
+    //   String.format(("{'message_id':'%s', 'status':'READ'}").replaceAll("'", "\"")
+    //     , messageId);
+    JsonObject params = new JsonObject();
+    params.addProperty("message_id",messageId);
+    params.addProperty("status","READ");
+    return send(webSocket, MIXIN_Action.ACKNOWLEDGE_MESSAGE_RECEIPT, params.toString());
   }
 
   public static boolean sendText(
@@ -117,17 +120,23 @@ public class MixinBot {
     String conversationId,
     String recipientId,
     String contactId) {
-    String params =
-      String.format(
-        ("{'conversation_id':'%s', 'recipient_id':'%s', 'message_id':'%s', 'category':'%s', " +
-          "'data': '%s'}").replaceAll("'", "\""),
-        conversationId,
-        recipientId,
-        UUID.randomUUID().toString(),
-        MIXIN_Category.PLAIN_CONTACT,
-        toBase64(String.format("{'user_id': '%s'}".replaceAll("'", "\""), contactId))
-      );
-    return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params);
+    // String params =
+    //   String.format(
+    //     ("{'conversation_id':'%s', 'recipient_id':'%s', 'message_id':'%s', 'category':'%s', " +
+    //       "'data': '%s'}").replaceAll("'", "\""),
+    //     conversationId,
+    //     recipientId,
+    //     UUID.randomUUID().toString(),
+    //     MIXIN_Category.PLAIN_CONTACT,
+    //     toBase64(String.format("{'user_id': '%s'}".replaceAll("'", "\""), contactId))
+    //   );
+    JsonObject params = new JsonObject();
+    params.addProperty("conversation_id",conversationId);
+    params.addProperty("recipient_id",recipientId);
+    params.addProperty("message_id",UUID.randomUUID().toString());
+    params.addProperty("category",MIXIN_Category.PLAIN_CONTACT.toString());
+    params.addProperty("data", toBase64(String.format("{'user_id': '%s'}".replaceAll("'", "\""), contactId)));
+    return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params.toString());
   }
 
   private static HashMap<String, String> makeHeaders(String token) {
@@ -152,8 +161,11 @@ public class MixinBot {
   public static void transfer(
     String assetId,
     String counterUserIid,
-    double amount, String PIN, byte[] PAY_KEY,
-    RSAPrivateKey pkey, String appid, String sessionid) throws IOException {
+    double amount,
+    String encryptPIN,
+    RSAPrivateKey pkey,
+    String appid,
+    String sessionid) throws IOException {
     String body =
       String.format(
         ("{'asset_id':'%s', 'counter_user_id':'%s', 'amount':'%s', 'memo':'hello', 'pin':'%s', " +
@@ -161,7 +173,7 @@ public class MixinBot {
         assetId,
         counterUserIid,
         amount,
-        MixinUtil.encryptPayKey(PIN, PAY_KEY),
+        encryptPIN,
         UUID.randomUUID().toString());
     String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", body,
                                                    pkey, appid, sessionid);
