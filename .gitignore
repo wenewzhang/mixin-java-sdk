@@ -10,3 +10,4 @@ gradlew.bat
 build.gradle.kts
 mixin-java-sdk.iml
 .idea/
+.DS_Store
