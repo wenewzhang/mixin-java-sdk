@@ -160,28 +160,27 @@ public class MixinBot {
 
   public static void transfer(
     String assetId,
-    String counterUserIid,
+    String opponentId,
     double amount,
     String encryptPIN,
     RSAPrivateKey pkey,
     String appid,
     String sessionid) throws IOException {
-    String body =
-      String.format(
-        ("{'asset_id':'%s', 'counter_user_id':'%s', 'amount':'%s', 'memo':'hello', 'pin':'%s', " +
-          "'trace_id': '%s'}").replaceAll("'", "\""),
-        assetId,
-        counterUserIid,
-        amount,
-        encryptPIN,
-        UUID.randomUUID().toString());
-    String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", body,
-                                                   pkey, appid, sessionid);
-    String res = MixinHttpUtil.post(
-      "https://api.mixin.one/transfers",
-      makeHeaders(token),
-      body
-    );
+      JsonObject jsBody = new JsonObject();
+      jsBody.addProperty("asset_id",assetId);
+      jsBody.addProperty("opponent_id",opponentId);
+      jsBody.addProperty("amount",String.valueOf(amount));
+      jsBody.addProperty("pin",encryptPIN);
+      jsBody.addProperty("trace_id",UUID.randomUUID().toString());
+      jsBody.addProperty("memo","hello");
+      System.out.println(jsBody.toString());
+      String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
+                                                     pkey, appid, sessionid);
+      String res = MixinHttpUtil.post(
+        "https://api.mixin.one/transfers",
+        makeHeaders(token),
+        jsBody.toString()
+  );
   }
 
   private static String toBase64(String orig) {
