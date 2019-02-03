@@ -122,7 +122,6 @@ public class PrivateKeyReader {
         }
         KeySpec keySpec = null;
 
-        System.out.println(builder.toString());
         byte[] encoded = Base64.getDecoder().decode(builder.toString());
         if (isRSAKey)
         {

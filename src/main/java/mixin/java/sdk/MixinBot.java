@@ -161,7 +161,7 @@ public class MixinBot {
   public static void transfer(
     String assetId,
     String opponentId,
-    double amount,
+    String amount,
     String encryptPIN,
     RSAPrivateKey pkey,
     String appid,
@@ -169,7 +169,7 @@ public class MixinBot {
       JsonObject jsBody = new JsonObject();
       jsBody.addProperty("asset_id",assetId);
       jsBody.addProperty("opponent_id",opponentId);
-      jsBody.addProperty("amount",String.valueOf(amount));
+      jsBody.addProperty("amount",amount);
       jsBody.addProperty("pin",encryptPIN);
       jsBody.addProperty("trace_id",UUID.randomUUID().toString());
       jsBody.addProperty("memo","hello");
