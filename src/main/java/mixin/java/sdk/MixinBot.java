@@ -96,6 +96,41 @@ public class MixinBot {
     return send(webSocket, MIXIN_Action.CREATE_MESSAGE, params.toString());
   }
 
+  public static boolean sendAppCard(WebSocket webSocket,
+                                    String client_id,
+                                    String asset_id,
+                                    String amount,
+                                    String conversation_id
+                                    ) {
+    String payLink = "https://mixin.one/pay?recipient=" +
+               client_id  + "&asset=" +
+               asset_id   +
+               "&amount=" + amount +
+               "&trace="  + UUID.randomUUID().toString() +
+               "&memo=";
+     JsonObject msgData = new JsonObject();
+     msgData.addProperty("icon_url","https://mixin.one/assets/98b586edb270556d1972112bd7985e9e.png");
+     msgData.addProperty("title","Pay 0.001 EOS");
+     msgData.addProperty("description","pay");
+     msgData.addProperty("action",payLink);
+     JsonObject msgParams = new JsonObject();
+     msgParams.addProperty("conversation_id",conversation_id);
+     msgParams.addProperty("category","APP_CARD");
+     msgParams.addProperty("status","SENT");
+     msgParams.addProperty("message_id",UUID.randomUUID().toString());
+     msgParams.addProperty("data",toBase64(msgData.toString()));
+
+//      JsonObject msgCard = new JsonObject();
+//      msgCard.addProperty("id",UUID.randomUUID().toString());
+//      msgCard.addProperty("action","CREATE_MESSAGE");
+//      msgCard.addProperty("params","CREATE_MESSAGE");
+//      msgCard = [
+//   'id'     =>  Uuid::uuid4()->toString(),
+//   'action' =>  'CREATE_MESSAGE',
+//   'params' =>   $msgParams,
+// ];
+     return send(webSocket, MIXIN_Action.CREATE_MESSAGE, msgParams.toString());
+  }
   public static boolean sendSticker(
     WebSocket webSocket,
     String conversationId,
