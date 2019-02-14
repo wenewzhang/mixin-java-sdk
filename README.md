@@ -1,5 +1,8 @@
 # mixin-java-sdk
-
+## build 
+```bash
+gradle build
+```
 ## Upload library to server through scp
 ->build.gradle.kts
 ```kotlin
