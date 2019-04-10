@@ -9,10 +9,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
+import com.google.gson.Gson;
+import java.util.UUID;
+import java.security.interfaces.RSAPrivateKey;
 
 public class MixinHttpUtil {
 
   private static final OkHttpClient client = new OkHttpClient();
+
+  private static HashMap<String, String> makeHeaders(String token) {
+    HashMap<String, String> headers = new HashMap<String, String>();
+    // headers.put("Mixin-Device-Id", Config.ADMIN_ID);
+    headers.put("Content-Type", "application/json");
+    headers.put("Authorization", "Bearer " + token);
+    return headers;
+  }
 
   public static String get(String url) throws IOException {
     Request request = new Request.Builder().url(url).build();
@@ -45,5 +59,29 @@ public class MixinHttpUtil {
       throw new IOException("Unexpected code " + response);
     }
     return response.body().string();
+  }
+  public static void transfer(
+    String assetId,
+    String opponentId,
+    String amount,
+    String encryptPIN,
+    RSAPrivateKey pkey,
+    String appid,
+    String sessionid) throws IOException {
+      JsonObject jsBody = new JsonObject();
+      jsBody.addProperty("asset_id",assetId);
+      jsBody.addProperty("opponent_id",opponentId);
+      jsBody.addProperty("amount",amount);
+      jsBody.addProperty("pin",encryptPIN);
+      jsBody.addProperty("trace_id",UUID.randomUUID().toString());
+      jsBody.addProperty("memo","hello");
+      System.out.println(jsBody.toString());
+      String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
+                                                     pkey, appid, sessionid);
+      String res = MixinHttpUtil.post(
+        "https://api.mixin.one/transfers",
+        makeHeaders(token),
+        jsBody.toString()
+  );
   }
 }
