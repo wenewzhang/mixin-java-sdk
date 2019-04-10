@@ -29,7 +29,7 @@ public class MixinBot {
     return client.newWebSocket(request, callback);
   }
 
-  private static boolean send(WebSocket webSocket, MIXIN_Action action, String params) {
+  public static boolean send(WebSocket webSocket, MIXIN_Action action, String params) {
     JsonObject jsObj = new JsonObject();
     Gson gson = new Gson();
     JsonElement jsXp = gson.fromJson(params, JsonElement.class);

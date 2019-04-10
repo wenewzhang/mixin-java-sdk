@@ -28,8 +28,19 @@ public class MixinHttpUtil {
     return headers;
   }
 
-  public static String get(String url) throws IOException {
-    Request request = new Request.Builder().url(url).build();
+  public static String get(String url,
+                          RSAPrivateKey pkey,
+                          String appid,
+                          String sessionid ) throws IOException {
+    String token = MixinUtil.JWTTokenGen.genToken("GET", url, "",
+                                                   pkey, appid, sessionid);
+    Request request = new Request.Builder()
+                                  .header("Authorization", "Bearer " + token)
+                                  .url(url)
+                                  .build();
+    System.out.println("------------get-----------------");
+    System.out.println(url);
+    System.out.println(token);
     Response response = client.newCall(request).execute();
     if (!response.isSuccessful()) {
       throw new IOException("Unexpected code " + response);
@@ -78,10 +89,25 @@ public class MixinHttpUtil {
       System.out.println(jsBody.toString());
       String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
                                                      pkey, appid, sessionid);
-      String res = MixinHttpUtil.post(
+      String res = post(
         "https://api.mixin.one/transfers",
         makeHeaders(token),
         jsBody.toString()
   );
+  }
+  public static String getAssets(
+                            RSAPrivateKey pkey,
+                            String appid,
+                            String sessionid ) {
+  try{
+    String res = get(
+      "https://api.mixin.one/assets",
+      pkey, appid, sessionid
+    );
+    return res;
+  } catch (IOException e){
+			e.printStackTrace();
+		}
+    return null;
   }
 }
