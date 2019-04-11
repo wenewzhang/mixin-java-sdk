@@ -19,7 +19,7 @@ import java.security.interfaces.RSAPrivateKey;
 public class MixinHttpUtil {
 
   private static final OkHttpClient client = new OkHttpClient();
-  private static final String baseUrl = "https://api.mixin.one";
+  public static final String baseUrl = "https://api.mixin.one";
 
   public static HashMap<String, String> makeHeaders(String token) {
     HashMap<String, String> headers = new HashMap<String, String>();

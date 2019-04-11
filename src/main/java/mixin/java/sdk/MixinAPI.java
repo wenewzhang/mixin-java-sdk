@@ -24,18 +24,17 @@ public class MixinAPI {
   private  final RSAPrivateKey  PrivateKey;
   private  final String encryptPIN;
   private  final byte[] PAY_KEY;
-  private static final String baseUrl = "https://api.mixin.one";
 
   public MixinAPI(String CLIENT_ID, String CLIENT_SECRET, String PIN,
                   String SESSION_ID, String PIN_TOKEN, RSAPrivateKey  PrivateKey) {
-    this.CLIENT_ID     = CLIENT_ID;
-    this.CLIENT_SECRET = CLIENT_SECRET;
-    this.PIN     = PIN;
-    this.SESSION_ID = SESSION_ID;
-    this.PIN_TOKEN     = PIN_TOKEN;
-    this.PrivateKey = PrivateKey;
-    this.PAY_KEY =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
-    this.encryptPIN = MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
+    this.CLIENT_ID       =  CLIENT_ID;
+    this.CLIENT_SECRET   =  CLIENT_SECRET;
+    this.PIN             =  PIN;
+    this.SESSION_ID      =  SESSION_ID;
+    this.PIN_TOKEN       =  PIN_TOKEN;
+    this.PrivateKey      =  PrivateKey;
+    this.PAY_KEY         =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
+    this.encryptPIN      =  MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
   }
   public String getAssets() {
   try{
@@ -64,7 +63,7 @@ public class MixinAPI {
       String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
                                                      this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
       String res = MixinHttpUtil.post(
-        "https://api.mixin.one/transfers",
+        MixinHttpUtil.baseUrl + "/transfers",
         MixinHttpUtil.makeHeaders(token),
         jsBody.toString()
   );
