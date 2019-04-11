@@ -87,10 +87,37 @@ public class MixinAPI {
           MixinHttpUtil.makeHeaders(token),
           jsBody.toString()
         );
-        JsonParser parser = new JsonParser();
-        JsonElement jsonTree = parser.parse(res);
-        return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
+        // System.out.println(res);
+        return processJsonObjectWithDataOrError(res);
       } catch (IOException e) { e.printStackTrace(); }
       return null;
+  }
+  public JsonObject verifyPin() {
+    JsonObject jsBody = new JsonObject();
+    jsBody.addProperty("pin",this.encryptPIN);
+    // System.out.println(jsBody.toString());
+    String token = MixinUtil.JWTTokenGen.genToken("POST", "/pin/verify", jsBody.toString(),
+                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+    try {
+       String res = MixinHttpUtil.post(
+         MixinHttpUtil.baseUrl + "/pin/verify",
+         MixinHttpUtil.makeHeaders(token),
+         jsBody.toString()
+       );
+       return processJsonObjectWithDataOrError(res);
+     } catch (IOException e) { e.printStackTrace(); }
+     return null;
+  }
+  public static JsonObject processJsonObjectWithDataOrError(String res) {
+    JsonParser parser = new JsonParser();
+    JsonElement jsonTree = parser.parse(res);
+    if ( jsonTree.isJsonObject() ) {
+      if ( jsonTree.getAsJsonObject().get("data") != null ) {
+         return  jsonTree.getAsJsonObject().get("data").getAsJsonObject();
+      } else if  ( jsonTree.getAsJsonObject().get("error") != null ) {
+         return  jsonTree.getAsJsonObject().get("error").getAsJsonObject();
+      }
+    }
+    return null;
   }
 }
