@@ -40,9 +40,6 @@ public class MixinHttpUtil {
                                   .header("Authorization", "Bearer " + token)
                                   .url(fullUrl)
                                   .build();
-    System.out.println("------------get-----------------");
-    System.out.println(url);
-    System.out.println(token);
     Response response = client.newCall(request).execute();
     if (!response.isSuccessful()) {
       throw new IOException("Unexpected code " + response);
@@ -96,20 +93,5 @@ public class MixinHttpUtil {
         makeHeaders(token),
         jsBody.toString()
   );
-  }
-  public static String getAssets(
-                            RSAPrivateKey pkey,
-                            String appid,
-                            String sessionid ) {
-  try{
-    String res = get(
-      "/assets",
-      pkey, appid, sessionid
-    );
-    return res;
-  } catch (IOException e){
-			e.printStackTrace();
-		}
-    return null;
   }
 }
