@@ -19,6 +19,7 @@ import java.security.interfaces.RSAPrivateKey;
 public class MixinHttpUtil {
 
   private static final OkHttpClient client = new OkHttpClient();
+  private static final String baseUrl = "https://api.mixin.one";
 
   private static HashMap<String, String> makeHeaders(String token) {
     HashMap<String, String> headers = new HashMap<String, String>();
@@ -34,9 +35,10 @@ public class MixinHttpUtil {
                           String sessionid ) throws IOException {
     String token = MixinUtil.JWTTokenGen.genToken("GET", url, "",
                                                    pkey, appid, sessionid);
+    String fullUrl = baseUrl + url;
     Request request = new Request.Builder()
                                   .header("Authorization", "Bearer " + token)
-                                  .url(url)
+                                  .url(fullUrl)
                                   .build();
     System.out.println("------------get-----------------");
     System.out.println(url);
@@ -101,7 +103,7 @@ public class MixinHttpUtil {
                             String sessionid ) {
   try{
     String res = get(
-      "https://api.mixin.one/assets",
+      "/assets",
       pkey, appid, sessionid
     );
     return res;
