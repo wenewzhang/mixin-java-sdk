@@ -63,30 +63,34 @@ public class MixinAPI {
     JsonElement jsonTree = parser.parse(res);
     return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
     // return res;
-  } catch (IOException e){
-      e.printStackTrace();
-    }
+  } catch (IOException e) { e.printStackTrace(); }
     return null;
   }
-  public String transfer(
+  public JsonObject transfer(
     String assetId,
     String opponentId,
-    String amount) throws IOException {
+    String amount,
+    String memo) {
       JsonObject jsBody = new JsonObject();
       jsBody.addProperty("asset_id",assetId);
       jsBody.addProperty("opponent_id",opponentId);
       jsBody.addProperty("amount",amount);
       jsBody.addProperty("pin",this.encryptPIN);
       jsBody.addProperty("trace_id",UUID.randomUUID().toString());
-      jsBody.addProperty("memo","hello");
-      System.out.println(jsBody.toString());
+      jsBody.addProperty("memo",memo);
+      // System.out.println(jsBody.toString());
       String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
                                                      this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
-      String res = MixinHttpUtil.post(
-        MixinHttpUtil.baseUrl + "/transfers",
-        MixinHttpUtil.makeHeaders(token),
-        jsBody.toString()
-  );
-      return res;
+      try {
+        String res = MixinHttpUtil.post(
+          MixinHttpUtil.baseUrl + "/transfers",
+          MixinHttpUtil.makeHeaders(token),
+          jsBody.toString()
+        );
+        JsonParser parser = new JsonParser();
+        JsonElement jsonTree = parser.parse(res);
+        return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
+      } catch (IOException e) { e.printStackTrace(); }
+      return null;
   }
 }
