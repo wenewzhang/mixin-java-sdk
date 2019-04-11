@@ -36,13 +36,16 @@ public class MixinAPI {
     this.PAY_KEY         =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
     this.encryptPIN      =  MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
   }
-  public String getAssets() {
+  public JsonObject getAssets() {
   try{
     String res = MixinHttpUtil.get(
       "/assets",
       this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
     );
-    return res;
+    JsonParser parser = new JsonParser();
+    JsonElement jsonTree = parser.parse(res);
+    return jsonTree.getAsJsonObject();
+    // return res;
   } catch (IOException e){
       e.printStackTrace();
     }
