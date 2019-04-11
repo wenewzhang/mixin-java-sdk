@@ -14,7 +14,9 @@ import java.security.interfaces.RSAPrivateKey;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.Gson;
+
 public class MixinAPI {
   private  final String CLIENT_ID;
   private  final String CLIENT_SECRET;
@@ -36,7 +38,7 @@ public class MixinAPI {
     this.PAY_KEY         =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
     this.encryptPIN      =  MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
   }
-  public JsonObject getAssets() {
+  public JsonArray getAssets() {
   try{
     String res = MixinHttpUtil.get(
       "/assets",
@@ -44,7 +46,22 @@ public class MixinAPI {
     );
     JsonParser parser = new JsonParser();
     JsonElement jsonTree = parser.parse(res);
-    return jsonTree.getAsJsonObject();
+    return jsonTree.getAsJsonObject().get("data").getAsJsonArray();
+    // return res;
+  } catch (IOException e){
+      e.printStackTrace();
+    }
+    return null;
+  }
+  public JsonObject getAsset(String asset_id) {
+  try{
+    String res = MixinHttpUtil.get(
+      "/assets/" + asset_id,
+      this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
+    );
+    JsonParser parser = new JsonParser();
+    JsonElement jsonTree = parser.parse(res);
+    return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
     // return res;
   } catch (IOException e){
       e.printStackTrace();
