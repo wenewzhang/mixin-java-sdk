@@ -21,7 +21,7 @@ public class MixinHttpUtil {
   private static final OkHttpClient client = new OkHttpClient();
   private static final String baseUrl = "https://api.mixin.one";
 
-  private static HashMap<String, String> makeHeaders(String token) {
+  public static HashMap<String, String> makeHeaders(String token) {
     HashMap<String, String> headers = new HashMap<String, String>();
     // headers.put("Mixin-Device-Id", Config.ADMIN_ID);
     headers.put("Content-Type", "application/json");
