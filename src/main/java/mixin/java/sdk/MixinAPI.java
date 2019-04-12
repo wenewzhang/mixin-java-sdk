@@ -120,4 +120,21 @@ public class MixinAPI {
     }
     return null;
   }
+  public JsonObject createUser(String fullName, String SessionSecret) {
+    JsonObject jsBody = new JsonObject();
+    jsBody.addProperty("full_name",fullName);
+    jsBody.addProperty("session_secret",SessionSecret);
+    String token = MixinUtil.JWTTokenGen.genToken("POST", "/users", jsBody.toString(),
+                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+    try {
+      String res = MixinHttpUtil.post(
+        MixinHttpUtil.baseUrl + "/users",
+        MixinHttpUtil.makeHeaders(token),
+        jsBody.toString()
+      );
+      // System.out.println(res);
+      return processJsonObjectWithDataOrError(res);
+    } catch (IOException e) { e.printStackTrace(); }
+    return null;
+  }
 }
