@@ -24,7 +24,6 @@ public class MixinAPI {
   private  final String SESSION_ID;
   private  final String PIN_TOKEN;
   private  final RSAPrivateKey  PrivateKey;
-  private  final String encryptPIN;
   private  final byte[] PAY_KEY;
 
   public MixinAPI(String CLIENT_ID, String CLIENT_SECRET, String PIN,
@@ -36,7 +35,6 @@ public class MixinAPI {
     this.PIN_TOKEN       =  PIN_TOKEN;
     this.PrivateKey      =  PrivateKey;
     this.PAY_KEY         =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
-    this.encryptPIN      =  MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
   }
   public JsonArray getAssets() {
   try{
@@ -71,11 +69,12 @@ public class MixinAPI {
     String opponentId,
     String amount,
     String memo) {
+      String encryptPIN      =  MixinUtil.encryptPayKey(this.PIN,this.PAY_KEY);
       JsonObject jsBody = new JsonObject();
       jsBody.addProperty("asset_id",assetId);
       jsBody.addProperty("opponent_id",opponentId);
       jsBody.addProperty("amount",amount);
-      jsBody.addProperty("pin",this.encryptPIN);
+      jsBody.addProperty("pin",encryptPIN);
       jsBody.addProperty("trace_id",UUID.randomUUID().toString());
       jsBody.addProperty("memo",memo);
       // System.out.println(jsBody.toString());
@@ -92,9 +91,10 @@ public class MixinAPI {
       } catch (IOException e) { e.printStackTrace(); }
       return null;
   }
-  public JsonObject verifyPin() {
+  public JsonObject verifyPin(String PIN) {
+    String encryptPIN      =  MixinUtil.encryptPayKey(PIN,this.PAY_KEY);
     JsonObject jsBody = new JsonObject();
-    jsBody.addProperty("pin",this.encryptPIN);
+    jsBody.addProperty("pin",encryptPIN);
     // System.out.println(jsBody.toString());
     String token = MixinUtil.JWTTokenGen.genToken("POST", "/pin/verify", jsBody.toString(),
                                                    this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
