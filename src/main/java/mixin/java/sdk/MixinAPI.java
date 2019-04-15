@@ -36,6 +36,9 @@ public class MixinAPI {
     this.PrivateKey      =  PrivateKey;
     this.PAY_KEY         =  MixinUtil.decrypt(this.PrivateKey, this.PIN_TOKEN, this.SESSION_ID);
   }
+  public String getClientID() {
+    return this.CLIENT_ID;
+  }
   public JsonArray getAssets() {
   try{
     String res = MixinHttpUtil.get(
