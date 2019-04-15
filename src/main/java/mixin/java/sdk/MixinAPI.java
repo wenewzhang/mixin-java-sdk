@@ -189,17 +189,34 @@ public class MixinAPI {
     } catch (IOException e) { e.printStackTrace(); }
     return null;
   }
-  public JsonObject getAddress(String asset_id) {
+  public JsonObject getAddress(String address) {
   try{
     String res = MixinHttpUtil.get(
-      "/addresses/" + asset_id,
+      "/addresses/" + address,
       this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
     );
-    JsonParser parser = new JsonParser();
-    JsonElement jsonTree = parser.parse(res);
-    return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
-    // return res;
+    System.out.println(res);
+    return processJsonObjectWithDataOrError(res);
   } catch (IOException e) { e.printStackTrace(); }
     return null;
   }
+  public JsonObject delAddress(String address, String PIN) {
+    String encryptPIN      =  MixinUtil.encryptPayKey(PIN,this.PAY_KEY);
+    JsonObject jsBody = new JsonObject();
+    jsBody.addProperty("pin",encryptPIN);
+    // System.out.println(jsBody.toString());
+    String Url = "/addresses/" + address + "/delete";
+    String token = MixinUtil.JWTTokenGen.genToken("POST", Url, jsBody.toString(),
+                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+    try {
+       String res = MixinHttpUtil.post(
+         MixinHttpUtil.baseUrl + Url,
+         MixinHttpUtil.makeHeaders(token),
+         jsBody.toString()
+       );
+       System.out.println(res);
+       return processJsonObjectWithDataOrError(res);
+     } catch (IOException e) { e.printStackTrace(); }
+     return null;
+   }
 }
