@@ -108,6 +108,28 @@ public class MixinAPI {
      } catch (IOException e) { e.printStackTrace(); }
      return null;
   }
+  public JsonObject updatePin(String OldPin, String PIN) {
+    String encryptPIN      =  MixinUtil.encryptPayKey(PIN,this.PAY_KEY);
+    String encryptOldPin   =  "";
+    if ( OldPin.equals("") ) { encryptOldPin = ""; }
+    else { encryptOldPin = MixinUtil.encryptPayKey(OldPin,this.PAY_KEY);}
+
+    JsonObject jsBody = new JsonObject();
+    jsBody.addProperty("old_pin",encryptOldPin);
+    jsBody.addProperty("pin",encryptPIN);
+    // System.out.println(jsBody.toString());
+    String token = MixinUtil.JWTTokenGen.genToken("POST", "/pin/update", jsBody.toString(),
+                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+    try {
+       String res = MixinHttpUtil.post(
+         MixinHttpUtil.baseUrl + "/pin/update",
+         MixinHttpUtil.makeHeaders(token),
+         jsBody.toString()
+       );
+       return processJsonObjectWithDataOrError(res);
+     } catch (IOException e) { e.printStackTrace(); }
+     return null;
+  }
   public static JsonObject processJsonObjectWithDataOrError(String res) {
     JsonParser parser = new JsonParser();
     JsonElement jsonTree = parser.parse(res);

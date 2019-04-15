@@ -173,7 +173,7 @@ public class PrivateKeyReader {
      * @throws IOException
      */
 
-    private RSAPrivateCrtKeySpec getRSAKeySpec(byte[] keyBytes) throws IOException  {
+    public static RSAPrivateCrtKeySpec getRSAKeySpec(byte[] keyBytes) throws IOException  {
 
       DerParser parser = new DerParser(keyBytes);
 
