@@ -219,4 +219,27 @@ public class MixinAPI {
      } catch (IOException e) { e.printStackTrace(); }
      return null;
    }
+   public JsonObject withdrawals(String addressID, String amount,
+                                           String trace_id, String AccountTag,
+                                           String Pin, String memo) {
+     String encryptPIN      =  MixinUtil.encryptPayKey(Pin,this.PAY_KEY);
+     JsonObject jsBody = new JsonObject();
+     jsBody.addProperty("address_id",addressID);
+     jsBody.addProperty("amount",amount);
+     jsBody.addProperty("trace_id",trace_id);
+     jsBody.addProperty("memo",memo);
+     jsBody.addProperty("pin",encryptPIN);
+     String token = MixinUtil.JWTTokenGen.genToken("POST", "/withdrawals", jsBody.toString(),
+                                                    this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+     try {
+       String res = MixinHttpUtil.post(
+         MixinHttpUtil.baseUrl + "/withdrawals",
+         MixinHttpUtil.makeHeaders(token),
+         jsBody.toString()
+       );
+       // System.out.println(res);
+       return processJsonObjectWithDataOrError(res);
+     } catch (IOException e) { e.printStackTrace(); }
+     return null;
+   }
 }
