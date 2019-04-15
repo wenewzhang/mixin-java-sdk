@@ -159,4 +159,47 @@ public class MixinAPI {
     } catch (IOException e) { e.printStackTrace(); }
     return null;
   }
+  public JsonObject createWithdrawAddress(String assetID, String publicKey,
+                                          String AccountName, String AccountTag,
+                                          String Pin, String label) {
+    String encryptPIN      =  MixinUtil.encryptPayKey(Pin,this.PAY_KEY);
+    JsonObject jsBody = new JsonObject();
+    if ( publicKey.equals("") ) { //for EOS
+      jsBody.addProperty("asset_id",assetID);
+      jsBody.addProperty("account_name",AccountName);
+      jsBody.addProperty("account_tag",AccountTag);
+      jsBody.addProperty("label",label);
+      jsBody.addProperty("pin",encryptPIN);
+    } else {
+      jsBody.addProperty("asset_id",assetID);
+      jsBody.addProperty("public_key",publicKey);
+      jsBody.addProperty("label",label);
+      jsBody.addProperty("pin",encryptPIN);
+    }
+    String token = MixinUtil.JWTTokenGen.genToken("POST", "/addresses", jsBody.toString(),
+                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+    try {
+      String res = MixinHttpUtil.post(
+        MixinHttpUtil.baseUrl + "/addresses",
+        MixinHttpUtil.makeHeaders(token),
+        jsBody.toString()
+      );
+      // System.out.println(res);
+      return processJsonObjectWithDataOrError(res);
+    } catch (IOException e) { e.printStackTrace(); }
+    return null;
+  }
+  public JsonObject getAddress(String asset_id) {
+  try{
+    String res = MixinHttpUtil.get(
+      "/addresses/" + asset_id,
+      this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
+    );
+    JsonParser parser = new JsonParser();
+    JsonElement jsonTree = parser.parse(res);
+    return jsonTree.getAsJsonObject().get("data").getAsJsonObject();
+    // return res;
+  } catch (IOException e) { e.printStackTrace(); }
+    return null;
+  }
 }
