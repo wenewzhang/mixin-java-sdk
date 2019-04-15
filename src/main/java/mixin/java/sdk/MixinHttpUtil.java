@@ -85,7 +85,7 @@ public class MixinHttpUtil {
       jsBody.addProperty("pin",encryptPIN);
       jsBody.addProperty("trace_id",UUID.randomUUID().toString());
       jsBody.addProperty("memo","hello");
-      System.out.println(jsBody.toString());
+      // System.out.println(jsBody.toString());
       String token = MixinUtil.JWTTokenGen.genToken("POST", "/transfers", jsBody.toString(),
                                                      pkey, appid, sessionid);
       String res = post(

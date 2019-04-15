@@ -25,10 +25,10 @@ dependencies {
     deployerJars("org.apache.maven.wagon:wagon-ssh:2.2")
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:26.0-jre")
-    implementation("com.auth0:java-jwt:3.5.0")
+    implementation("com.auth0:java-jwt:3.8.0")
     implementation("commons-codec:commons-codec:1.11")
-    implementation("com.squareup.okio:okio:2.2.1")
-    implementation("com.squareup.okhttp3:okhttp:3.12.1")
+    implementation("com.squareup.okio:okio:2.2.2")
+    implementation("com.squareup.okhttp3:okhttp:3.14.1")
     implementation("com.google.code.gson:gson:2.8.5")
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")
