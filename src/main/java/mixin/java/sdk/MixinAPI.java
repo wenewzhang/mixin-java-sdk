@@ -223,9 +223,10 @@ public class MixinAPI {
      return null;
    }
    public JsonObject withdrawals(String addressID, String amount,
-                                           String trace_id, String AccountTag,
-                                           String Pin, String memo) {
+                                 String trace_id,
+                                 String Pin, String memo) {
      String encryptPIN      =  MixinUtil.encryptPayKey(Pin,this.PAY_KEY);
+     if ( trace_id.equals("") ) { trace_id = UUID.randomUUID().toString();}
      JsonObject jsBody = new JsonObject();
      jsBody.addProperty("address_id",addressID);
      jsBody.addProperty("amount",amount);
