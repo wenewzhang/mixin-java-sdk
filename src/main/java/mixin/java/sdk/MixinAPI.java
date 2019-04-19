@@ -261,8 +261,8 @@ public class MixinAPI {
         url,
         this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
       );
-      System.out.println(res);
-      System.out.println(url);
+      // System.out.println(res);
+      // System.out.println(url);
       JsonParser parser = new JsonParser();
       JsonElement jsonTree = parser.parse(res);
       return jsonTree.getAsJsonObject().get("data").getAsJsonArray();
@@ -270,16 +270,5 @@ public class MixinAPI {
     } catch (IOException e){ e.printStackTrace();}
       return null;
     }
-//     JsonObject jsBody = new JsonObject();
-//     jsBody.addProperty("limit",limit);
-//     jsBody.addProperty("offset",offset);
-//     jsBody.addProperty("asset",asset);
-//     jsBody.addProperty("order",order);
-//
-//     String token = MixinUtil.JWTTokenGen.genToken("POST", "/withdrawals", jsBody.toString(),
-//                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
-//
-// finalURL =  % (offset, asset_id, order, limit)
-//   finalURL = "/network/snapshots?offset=%s&asset=%s&order=%s&limit=%d" % (offset, asset_id, order, limit)
-//   }
+
 }
