@@ -17,6 +17,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.Gson;
 
+
+import java.net.URLEncoder;
+
+
 public class MixinAPI {
   private  final String CLIENT_ID;
   private  final String CLIENT_SECRET;
@@ -246,4 +250,36 @@ public class MixinAPI {
      } catch (IOException e) { e.printStackTrace(); }
      return null;
    }
+   public JsonArray getSnapshots(String asset,
+                                  int limit,
+                                  String offset,
+                                  String order) {
+    try{
+      String url = String.format("/network/snapshots?offset=%s&asset=%s&order=%s&limit=%d",
+                                  URLEncoder.encode(offset, "UTF-8"),asset,order,limit);
+      String res = MixinHttpUtil.get(
+        url,
+        this.PrivateKey, this.CLIENT_ID, this.SESSION_ID
+      );
+      System.out.println(res);
+      System.out.println(url);
+      JsonParser parser = new JsonParser();
+      JsonElement jsonTree = parser.parse(res);
+      return jsonTree.getAsJsonObject().get("data").getAsJsonArray();
+      // return res;
+    } catch (IOException e){ e.printStackTrace();}
+      return null;
+    }
+//     JsonObject jsBody = new JsonObject();
+//     jsBody.addProperty("limit",limit);
+//     jsBody.addProperty("offset",offset);
+//     jsBody.addProperty("asset",asset);
+//     jsBody.addProperty("order",order);
+//
+//     String token = MixinUtil.JWTTokenGen.genToken("POST", "/withdrawals", jsBody.toString(),
+//                                                   this.PrivateKey, this.CLIENT_ID, this.SESSION_ID);
+//
+// finalURL =  % (offset, asset_id, order, limit)
+//   finalURL = "/network/snapshots?offset=%s&asset=%s&order=%s&limit=%d" % (offset, asset_id, order, limit)
+//   }
 }
